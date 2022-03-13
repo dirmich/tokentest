@@ -6,7 +6,7 @@ async function main(name, symbol, supply) {
   //
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
-  // await hre.run('compile');
+  await hre.run('compile')
 
   // We get the contract to deploy
   const IToken = await hre.ethers.getContractFactory('Basic')
@@ -15,14 +15,14 @@ async function main(name, symbol, supply) {
   await token.deployed()
 
   console.log(`${name} deployed to:`, token.address)
-  setTimeout(async () => {
-    const r = await hre.run('verify:verify', {
-      address: token.address,
-      contract: 'contracts/Basic.sol:Basic',
-      constructorArguments: [name, symbol, supply],
-    })
-    console.log(`${name} verified `, r)
-  }, 2000)
+  // setTimeout(async () => {
+  //   const r = await hre.run('verify:verify', {
+  //     address: token.address,
+  //     contract: 'contracts/Basic.sol:Basic',
+  //     constructorArguments: [name, symbol, supply],
+  //   })
+  //   console.log(`${name} verified `, r)
+  // }, 2000)
 }
 
 // We recommend this pattern to be able to use async/await everywhere

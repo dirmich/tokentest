@@ -1,19 +1,35 @@
 const { expect } = require('chai')
-const { ethers } = require('hardhat')
+const { parseEther } = require('ethers/lib/utils')
+const { ethers, utils } = require('hardhat')
 
-describe('Mom', function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const factory = await ethers.getContractFactory('Mom')
-    const greeter = await factory.deploy('Hello, world!')
-    await greeter.deployed()
+describe('Basic', function () {
+  it('Should send to payer', async function () {
+    const factory = await ethers.getContractFactory('Basic')
+    const [owner, payer, ...addr] = await ethers.getSigners()
+    const token = await factory.deploy(
+      'TEST',
+      'TST1',
+      10000,
+      payer.address,
+      owner.address,
+      {
+        value: parseEther('1'),
+      }
+    )
+    await token.deployed()
 
-    expect(await greeter.greet()).to.equal('Hello, world!')
+    const payer_bal = await token.balanceOf(payer.address)
+    const owner_bal = await token.balanceOf(owner.address)
 
-    const setGreetingTx = await greeter.setGreeting('Hola, mundo!')
+    console.log('payer', payer.address, payer_bal, await payer.getBalance())
+    console.log('owner', owner.address, owner_bal, await owner.getBalance())
+    // expect(payer_bal).to.equal('Hello, world!')
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait()
+    // const setGreetingTx = await greeter.setGreeting('Hola, mundo!')
 
-    expect(await greeter.greet()).to.equal('Hola, mundo!')
+    // // wait until the transaction is mined
+    // await setGreetingTx.wait()
+
+    // expect(await greeter.greet()).to.equal('Hola, mundo!')
   })
 })
